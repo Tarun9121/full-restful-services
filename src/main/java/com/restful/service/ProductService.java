@@ -32,6 +32,7 @@ public class ProductService {
 
     public Product updateProduct(UUID id, Product product) {
         Product existingProduct = getProduct(id);
+        product.setId(id);
         return productRepository.save(product);
     }
 

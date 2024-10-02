@@ -1,18 +1,19 @@
 package com.restful.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@EqualsAndHashCode
 @Entity @Table(name="users")
 @Data @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     @Id
     @GeneratedValue(generator = "haha")
@@ -29,6 +30,9 @@ public class User {
 
     @Column(name="password")
     private String password;
+
+    @JsonIgnore
+    private Boolean isDeleted;
 }
 
 /**

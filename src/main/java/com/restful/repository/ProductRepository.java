@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -30,7 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
      * For more complex queries, you can use @Query annotation to write your JPQL and SQL queries
      */
 
-    Product findByProductNameAndOrderdBy(String product, String orderdBy);
+    Product findByProductNameAndOrderdBy(String productName, String orderdBy);
 
     @Query(nativeQuery = true, value="select * from products where quantity > :quantity")
     List<Product> getQuantityMoreThan(@Param("quantity") int quantity);

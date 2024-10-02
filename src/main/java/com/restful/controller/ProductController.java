@@ -44,6 +44,11 @@ public class ProductController {
         return productService.updateProduct(id, product);
     }
 
+    @PatchMapping("/{id}")
+    public Product patchProduct(@PathVariable("id") UUID id, @RequestBody Product product) {
+        return productService.updateProduct(id, product);
+    }
+
     @DeleteMapping("/{id}")
     public void removeProduct(@PathVariable("id") UUID id) {
         productService.removeProduct(id);
