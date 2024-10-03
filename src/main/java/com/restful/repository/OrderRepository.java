@@ -44,11 +44,11 @@ public class OrderRepository implements MyCrudRepository {
     public Optional<Order> updateOrder(UUID orderId, Order data) {
         Optional<Order> existingData = findById(orderId);
 
-        if(existingData.isPresent()) {
+        if(existingData.isPresent()) {                                      // If data is present then I'm saving the data and returning it
             data.setOrderId(orderId);
             return Optional.of(entityManager.merge(data));
         }
-        else {
+        else {                                                              // if there is no data then we are returning null
             return Optional.ofNullable(null);
         }
     }
