@@ -20,6 +20,11 @@ public class UserController {
         return userService.postUser(user);
     }
 
+    @PostMapping("/all")
+    public List<User> postAllUsers(@RequestBody List<User> usersList) {
+        return userService.saveAllUsers(usersList);
+    }
+
     @GetMapping
     public List<User> getAll() {
         return userService.getAll();

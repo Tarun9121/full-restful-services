@@ -32,7 +32,7 @@ public class User {
     private String password;
 
     @JsonIgnore
-    private Boolean isDeleted;
+    private boolean isDeleted;
 }
 
 /**

@@ -13,11 +13,14 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    /**
+     * When you are working with the native queries, when your id is uuid you have to convert into String.
+     *
+     * @param userId - id of the user
+     * @return - returns boolean, if the user deleted his account then it returns true
+     */
     @Query(nativeQuery = true, value = "select is_deleted from users where id = :userId")
-    public Optional<Integer> isActiveInteger(@Param("userId") UUID userId);
-
-    @Query(nativeQuery = true, value = "select is_deleted from users where id = :userId")
-    public Optional<Boolean> isActiveBoolean(@Param("userId") UUID userId);
+    Optional<Integer> findByIdAndIsDeleted(String userId);
 
     @Query("select u.isDeleted from User u where u.id = :userId")
     public Optional<Boolean> isActiveNonNative(@Param("userId") UUID userId);

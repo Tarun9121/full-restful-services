@@ -26,6 +26,10 @@ public class UserService {
 //
 //    }
 
+    public List<User> saveAllUsers(List<User> usersList) {
+        return userRepository.saveAll(usersList);
+    }
+
     public ResponseEntity<User> getUserById(UUID userId) {
         Optional<User> existingUser = userRepository.findById(userId);
 
@@ -57,8 +61,7 @@ public class UserService {
     @Transactional
     @Modifying
     public ResponseEntity<String> deleteUser(UUID userId) {
-        Optional<Integer> isDeletedInteger = userRepository.isActiveInteger(userId);
-        Optional<Boolean> isDeletedBoolean = userRepository.isActiveBoolean(userId);
+        Optional<Integer> isDeletedInteger = userRepository.findByIdAndIsDeleted(userId.toString());
         Optional<Boolean> isDeletedNonNative = userRepository.isActiveNonNative(userId);
         if(isDeletedNonNative.isPresent()) {
             if(isDeletedNonNative.get()) {
