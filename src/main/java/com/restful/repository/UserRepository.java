@@ -33,5 +33,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = "update users set is_deleted = 1 where id = :userId")
-    public void disableAccount(@Param("userId") UUID userId);
+    public void disableAccount(@Param("userId") String userId);
 }

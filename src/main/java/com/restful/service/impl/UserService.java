@@ -29,10 +29,6 @@ public class UserService implements UserInterface {
         return userDto;
     }
 
-//    public void patchUser(UUID userId, User udpatedUser) {
-//
-//    }
-
     public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
         List<User> usersList = new ArrayList<>();
         BeanUtils.copyProperties(usersDtoList, usersList);
@@ -57,7 +53,13 @@ public class UserService implements UserInterface {
     public List<UserDTO> getAll() {
         List<User> usersList = userRepository.findAll();
         List<UserDTO> usersDtoList = new ArrayList<>();
-        BeanUtils.copyProperties(usersList, usersDtoList);
+
+        usersList.forEach(user ->  {
+            UserDTO dto = new UserDTO();
+            BeanUtils.copyProperties(user, dto);
+            usersDtoList.add(dto);
+        });
+
         return usersDtoList;
     }
 
