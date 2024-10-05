@@ -36,6 +36,16 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
+    @GetMapping("/check/{userId}")
+    public Boolean checkUser(@PathVariable("userId")UUID userId) {
+        return userService.isPresent(userId);
+    }
+
+    @GetMapping("/orderby/age")
+    public List<UserDTO> getAllUsersOrderByAge() {
+        return userService.getAllUsersOrderByAge();
+    }
+
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID userId, @RequestBody UserDTO updatedUser) {
         return userService.updateUser(userId, updatedUser);

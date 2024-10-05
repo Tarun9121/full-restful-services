@@ -29,13 +29,26 @@ public interface UserInterface {
     public ResponseEntity<UserDTO> getUserById(UUID userId);
 
     /**
+     * tells if the user is present or not
+     * @param userId - id of the user
+     * @return - if present true or else false
+     */
+    boolean isPresent(UUID userId);
+
+    /**
+     * returns all the users in specific order
+     * @return - list of users ordered by age
+     */
+    List<UserDTO> getAllUsersOrderByAge();
+
+    /**
      * details of all users
      * @return - it will return the details of all the users
      */
     public List<UserDTO> getAll();
 
     /**
-     * If the data is present the it will update or it will send the status-404 with the null body
+     * If the data is present it will update, or it will send the status-404 with the null body
      * @param userId - id of the user
      * @param updatedUser - data to be updated
      * @return - if the user is found it will be updated else it will send the status-404 with the null

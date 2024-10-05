@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +49,25 @@ public class UserService implements UserInterface {
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @Override
+    public boolean isPresent(UUID userId) {
+        List<User> usersList = userRepository.findAll();
+        Optional<User> user = userRepository.findById(userId);
+
+        if(user.isPresent() && !usersList.isEmpty()) {
+            return usersList.contains(user.get());
+        }
+        return false;
+    }
+
+    @Override
+    public List<UserDTO> getAllUsersOrderByAge() {
+        List<UserDTO> usersList = getAll();
+//        Comparator<UserDTO> orderByAge = (user1, user2) -> Integer.compare(user1.getAge(), user2.getAge());
+        usersList.sort((user1, user2) -> Integer.compare(user1.getAge(), user2.getAge()));
+        return usersList;
     }
 
     public List<UserDTO> getAll() {

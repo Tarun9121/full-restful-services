@@ -13,7 +13,7 @@ public class UserDTO {
     private UUID id;
     private String name;
     private String email;
-
+    private Integer age;
     /**
      * @JsonIgnore - this annotation prevents both serialization and deserialization of the annotated field. To resolve this we have to prevent the access
      *
