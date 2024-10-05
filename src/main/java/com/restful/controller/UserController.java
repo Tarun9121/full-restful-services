@@ -1,7 +1,8 @@
 package com.restful.controller;
 
+import com.restful.dto.UserDTO;
 import com.restful.entity.User;
-import com.restful.service.UserService;
+import com.restful.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,32 +17,32 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public User postUser(@RequestBody User user) {
+    public UserDTO postUser(@RequestBody UserDTO user) {
         return userService.postUser(user);
     }
 
     @PostMapping("/all")
-    public List<User> postAllUsers(@RequestBody List<User> usersList) {
+    public List<UserDTO> postAllUsers(@RequestBody List<UserDTO> usersList) {
         return userService.saveAllUsers(usersList);
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<UserDTO> getAll() {
         return userService.getAll();
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
         return userService.getUserById(userId);
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable("userId") UUID userId, @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID userId, @RequestBody UserDTO updatedUser) {
         return userService.updateUser(userId, updatedUser);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<User> patchUser(@PathVariable("userId") UUID userId, @RequestBody User udpateUser) {
+    public ResponseEntity<UserDTO> patchUser(@PathVariable("userId") UUID userId, @RequestBody UserDTO udpateUser) {
         return userService.updateUser(userId, udpateUser);
     }
 

@@ -1,7 +1,10 @@
-package com.restful.service;
+package com.restful.service.impl;
 
+import com.restful.dto.UserDTO;
 import com.restful.entity.User;
 import com.restful.repository.UserRepository;
+import com.restful.service.UserInterface;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
@@ -9,43 +12,56 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService implements UserInterface {
     @Autowired
     private UserRepository userRepository;
 
-    public User postUser(User user) {
-        return userRepository.save(user);
+    public UserDTO postUser(UserDTO userDto) {
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+        userRepository.save(user);
+        return userDto;
     }
 
 //    public void patchUser(UUID userId, User udpatedUser) {
 //
 //    }
 
-    public List<User> saveAllUsers(List<User> usersList) {
-        return userRepository.saveAll(usersList);
+    public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
+        List<User> usersList = new ArrayList<>();
+        BeanUtils.copyProperties(usersDtoList, usersList);
+        userRepository.saveAll(usersList);
+        return usersDtoList;
     }
 
-    public ResponseEntity<User> getUserById(UUID userId) {
+    public ResponseEntity<UserDTO> getUserById(UUID userId) {
+
         Optional<User> existingUser = userRepository.findById(userId);
 
         if(existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(existingUser.get());
+            UserDTO userData = new UserDTO();
+            BeanUtils.copyProperties(existingUser.get(), userData);
+            return ResponseEntity.status(HttpStatus.OK).body(userData);
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDTO> getAll() {
+        List<User> usersList = userRepository.findAll();
+        List<UserDTO> usersDtoList = new ArrayList<>();
+        BeanUtils.copyProperties(usersList, usersDtoList);
+        return usersDtoList;
     }
 
-    public ResponseEntity<User> updateUser(UUID userId, User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(UUID userId, UserDTO updatedUser) {
         Optional<User> existingData = userRepository.findById(userId);
 
         if(existingData.isPresent()) {
@@ -69,7 +85,7 @@ public class UserService {
             }
             else {
                 userRepository.disableAccountNonNative(userId);
-                return ResponseEntity.status(HttpStatus.OK).body("The accound deleted successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("The account deleted successfully");
             }
         }
         else {

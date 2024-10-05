@@ -1,7 +1,7 @@
 package com.restful.controller;
 
 import com.restful.entity.Order;
-import com.restful.service.OrderService;
+import com.restful.service.impl.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

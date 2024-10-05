@@ -1,4 +1,4 @@
-package com.restful.service;
+package com.restful.service.impl;
 
 import com.restful.entity.Product;
 import com.restful.exception.ProductNotFoundException;

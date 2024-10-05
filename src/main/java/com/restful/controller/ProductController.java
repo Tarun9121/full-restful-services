@@ -1,7 +1,7 @@
 package com.restful.controller;
 
 import com.restful.entity.Product;
-import com.restful.service.ProductService;
+import com.restful.service.impl.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
