@@ -46,6 +46,11 @@ public class UserController {
         return userService.getAllUsersOrderByAge();
     }
 
+    @GetMapping("/age/{userAge}")
+    public List<UserDTO> getUsersByAge(@PathVariable("userAge") int userAge) {
+        return userService.getUsersByAge(userAge);
+    }
+
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID userId, @RequestBody UserDTO updatedUser) {
         return userService.updateUser(userId, updatedUser);

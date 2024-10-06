@@ -12,16 +12,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     public UserDTO postUser(UserDTO userDto) {
         User user = new User();
@@ -113,5 +119,30 @@ public class UserService implements UserInterface {
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("sorry, your account is not found");
         }
+    }
+
+    /**
+     * WRITING NATIVE QUERIES WITH EntityManager:
+     * @Use - .creativeNativeQuery(nativeQuery)
+     * @Note - the above method will not map the result to the entity class, you will get Object[]. if you want to map the result to the entity then use .createNativeQuery(nativeQuery, Entity.class)
+     * @Params - if you have any params in the native query then use .setParamater("param1", param1)
+     * @Get_Result - if the query returns a list of rows use .getResultList(), if it returns one row then use .getSingleResult()
+     */
+
+    @Override
+    public List<UserDTO> getUsersByAge(int age) {
+        List<User> usersList = entityManager
+                .createQuery("select u from User u where u.age = :age", User.class)
+                .setParameter("age", age)
+                .getResultList();
+        List<UserDTO> usersDtoList = new ArrayList<>();
+
+        usersList.forEach(user -> {
+            UserDTO userDto = new UserDTO();
+            BeanUtils.copyProperties(user, userDto);
+            usersDtoList.add(userDto);
+        });
+
+        return usersDtoList;
     }
 }

@@ -1,6 +1,7 @@
 package com.restful.service;
 
 import com.restful.dto.UserDTO;
+import com.restful.entity.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -61,4 +62,11 @@ public interface UserInterface {
      * @return - if the account is deleted then it will return status-200, it is already deleted then it will send the 406-status, if the user is not found then it will return status-400 with appropriate message
      */
     public ResponseEntity<String> deleteUser(UUID userId);
+
+    /**
+     * gets the list of users by age
+     * @param age - age of the user
+     * @return - returns a list of users with same age
+     */
+    public List<UserDTO> getUsersByAge(int age);
 }
