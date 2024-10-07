@@ -29,7 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
      * For more complex queries, you can use @Query annotation to write your JPQL and SQL queries
      */
 
-    Product findByProductNameAndOrderdBy(String productName, String orderdBy);
+    List<Product> findByProductNameAndOrderdBy(String productName, String orderdBy);
 
     @Query(nativeQuery = true, value="select * from products where quantity > :quantity")
     List<Product> getQuantityMoreThan(@Param("quantity") int quantity);

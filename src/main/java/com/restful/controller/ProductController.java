@@ -25,7 +25,7 @@ public class ProductController {
     }
 
     @GetMapping("/p/{product}/o/{orderdBy}")
-    public Product getByProductAndOrderdBy(@PathVariable("product") String product, @PathVariable("orderdBy") String orderdBy) {
+    public List<Product> getByProductAndOrderdBy(@PathVariable("product") String product, @PathVariable("orderdBy") String orderdBy) {
         return productService.getByProductAndOrderdBy(product, orderdBy);
     }
 
@@ -34,23 +34,23 @@ public class ProductController {
         return productService.getQuantityMoreThan(quantity);
     }
 
-    @GetMapping("/{id}")
-    public Product getProduct(@PathVariable UUID id) {
-        return productService.getProduct(id);
+    @GetMapping("/{productId}")
+    public Product getProduct(@PathVariable UUID productId) {
+        return productService.getProductById(productId);
     }
 
-    @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable("id") UUID id, @RequestBody Product product) {
-        return productService.updateProduct(id, product);
+    @PutMapping("/{productId}")
+    public Product updateProduct(@PathVariable("productId") UUID productId, @RequestBody Product product) {
+        return productService.updateProduct(productId, product);
     }
 
-    @PatchMapping("/{id}")
-    public Product patchProduct(@PathVariable("id") UUID id, @RequestBody Product product) {
-        return productService.updateProduct(id, product);
+    @PatchMapping("/{productId}")
+    public Product patchProduct(@PathVariable("productId") UUID productId, @RequestBody Product product) {
+        return productService.updateProduct(productId, product);
     }
 
-    @DeleteMapping("/{id}")
-    public void removeProduct(@PathVariable("id") UUID id) {
-        productService.removeProduct(id);
+    @DeleteMapping("/{productId}")
+    public void removeProduct(@PathVariable("productId") UUID productId) {
+        productService.removeProduct(productId);
     }
 }

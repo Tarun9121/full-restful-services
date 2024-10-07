@@ -22,22 +22,22 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product getProduct(UUID id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("product not found with id: " + id));
+    public Product getProductById(UUID productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("product not found with id: " + productId));
     }
 
-    public Product getByProductAndOrderdBy(String product, String orderdBy) {
+    public List<Product> getByProductAndOrderdBy(String product, String orderdBy) {
         return productRepository.findByProductNameAndOrderdBy(product, orderdBy);
     }
 
-    public Product updateProduct(UUID id, Product product) {
-        Product existingProduct = getProduct(id);
-        product.setId(id);
+    public Product updateProduct(UUID productId, Product product) {
+        Product existingProduct = getProductById(productId);
+        product.setId(productId);
         return productRepository.save(product);
     }
 
-    public void removeProduct(UUID id) {
-        Product existingData = getProduct(id);
+    public void removeProduct(UUID productId) {
+        Product existingData = getProductById(productId);
     }
 
     public List<Product> getQuantityMoreThan(int quantity) {
