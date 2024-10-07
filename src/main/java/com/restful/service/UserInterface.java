@@ -1,7 +1,6 @@
 package com.restful.service;
 
 import com.restful.dto.UserDTO;
-import com.restful.entity.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
