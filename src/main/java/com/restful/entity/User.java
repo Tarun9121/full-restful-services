@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @EqualsAndHashCode
 @Entity @Table(name="users")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {

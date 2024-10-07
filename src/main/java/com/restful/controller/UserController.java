@@ -41,6 +41,11 @@ public class UserController {
         return userService.isPresent(userId);
     }
 
+    @GetMapping("/is/{userId}")
+    public User findByIdAndIsDeleted(@PathVariable("userId") UUID userId) {
+        return userService.findByIdAndIsDeleted(userId, Boolean.FALSE);
+    }
+
     @GetMapping("/orderby/age")
     public List<UserDTO> getAllUsersOrderByAge() {
         return userService.getAllUsersOrderByAge();

@@ -25,6 +25,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.isDeleted from User u where u.id = :userId")
     public Optional<Boolean> isActiveNonNative(@Param("userId") UUID userId);
 
+    public Optional<User> findByIdAndIsDeleted(UUID userId, boolean isDeleted);
+
     @Modifying
     @Transactional
     @Query("update User u set u.isDeleted = 1 where u.id = :userId")

@@ -13,13 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserInterface {
@@ -34,6 +31,10 @@ public class UserService implements UserInterface {
         BeanUtils.copyProperties(userDto, user);
         userRepository.save(user);
         return userDto;
+    }
+
+    public User findByIdAndIsDeleted(UUID userId, boolean isDeleted) {
+        return userRepository.findByIdAndIsDeleted(userId, isDeleted).orElse(null);
     }
 
     public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
