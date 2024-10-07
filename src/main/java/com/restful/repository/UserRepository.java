@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,15 +23,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(nativeQuery = true, value = "select is_deleted from users where id = :userId")
     Optional<Integer> findByIdAndIsDeleted(String userId);
 
-    @Query("select u.isDeleted from User u where u.id = :userId")
-    public Optional<Boolean> isActiveNonNative(@Param("userId") UUID userId);
+//    public Optional<User> findByIdAndIsDeleted
 
     public Optional<User> findByIdAndIsDeleted(UUID userId, boolean isDeleted);
 
-    @Modifying
-    @Transactional
-    @Query("update User u set u.isDeleted = 1 where u.id = :userId")
-    public void disableAccountNonNative(@Param("userId") UUID userId);
+    public List<User> findByIsDeletedIsFalse();
+
+    public Optional<User> findByIdAndIsDeletedIsFalse(String userId);
 
     @Modifying
     @Transactional

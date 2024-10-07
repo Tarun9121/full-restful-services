@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,8 +34,8 @@ public class UserService implements UserInterface {
         return userDto;
     }
 
-    public User findByIdAndIsDeleted(UUID userId, boolean isDeleted) {
-        return userRepository.findByIdAndIsDeleted(userId, isDeleted).orElse(null);
+    public User findByIdAndIsDeletedIsFalse(UUID userId) {
+        return userRepository.findByIdAndIsDeletedIsFalse(userId.toString()).orElse(null);
     }
 
     public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
@@ -44,18 +45,8 @@ public class UserService implements UserInterface {
         return usersDtoList;
     }
 
-    public ResponseEntity<UserDTO> getUserById(UUID userId) {
-
-        Optional<User> existingUser = userRepository.findById(userId);
-
-        if(existingUser.isPresent()) {
-            UserDTO userData = new UserDTO();
-            BeanUtils.copyProperties(existingUser.get(), userData);
-            return ResponseEntity.status(HttpStatus.OK).body(userData);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public Optional<User> getUserById(UUID userId) {
+        return userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
     }
 
     @Override
@@ -72,13 +63,12 @@ public class UserService implements UserInterface {
     @Override
     public List<UserDTO> getAllUsersOrderByAge() {
         List<UserDTO> usersList = getAll();
-//        Comparator<UserDTO> orderByAge = (user1, user2) -> Integer.compare(user1.getAge(), user2.getAge());
-        usersList.sort((user1, user2) -> Integer.compare(user1.getAge(), user2.getAge()));
+        usersList.sort(Comparator.comparingInt(UserDTO::getAge));
         return usersList;
     }
 
     public List<UserDTO> getAll() {
-        List<User> usersList = userRepository.findAll();
+        List<User> usersList = userRepository.findByIsDeletedIsFalse();
         List<UserDTO> usersDtoList = new ArrayList<>();
 
         usersList.forEach(user ->  {
@@ -91,7 +81,7 @@ public class UserService implements UserInterface {
     }
 
     public ResponseEntity<UserDTO> updateUser(UUID userId, UserDTO updatedUser) {
-        Optional<User> existingData = userRepository.findById(userId);
+        Optional<User> existingData = userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
 
         if(existingData.isPresent()) {
             updatedUser.setId(userId);
@@ -105,20 +95,15 @@ public class UserService implements UserInterface {
 
     @Transactional
     @Modifying
-    public ResponseEntity<String> deleteUser(UUID userId) {
-        Optional<Integer> isDeletedInteger = userRepository.findByIdAndIsDeleted(userId.toString());
-        Optional<Boolean> isDeletedNonNative = userRepository.isActiveNonNative(userId);
-        if(isDeletedNonNative.isPresent()) {
-            if(isDeletedNonNative.get()) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("The account already deleted");
-            }
-            else {
-                userRepository.disableAccountNonNative(userId);
-                return ResponseEntity.status(HttpStatus.OK).body("The account deleted successfully");
-            }
+    public String deleteUser(UUID userId) {
+        Optional<User> existingUser = userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
+
+        if(existingUser.isEmpty()) {
+            return "user cannot found with the given id: " + userId;
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("sorry, your account is not found");
+            userRepository.disableAccount(userId.toString());
+            return "user deleted successfully with the id: " + userId;
         }
     }
 

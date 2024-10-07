@@ -3,11 +3,14 @@ package com.restful.controller;
 import com.restful.dto.UserDTO;
 import com.restful.entity.User;
 import com.restful.service.impl.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +36,13 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
-        return userService.getUserById(userId);
+        Optional<User> existingUser = userService.getUserById(userId);
+        if(existingUser.isPresent()) {
+            UserDTO existingUserDto = new UserDTO();
+            BeanUtils.copyProperties(existingUser, existingUserDto);
+            return ResponseEntity.status(HttpStatus.OK).body(existingUserDto);
+        }
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @GetMapping("/check/{userId}")
@@ -43,7 +52,7 @@ public class UserController {
 
     @GetMapping("/is/{userId}")
     public User findByIdAndIsDeleted(@PathVariable("userId") UUID userId) {
-        return userService.findByIdAndIsDeleted(userId, Boolean.FALSE);
+        return userService.findByIdAndIsDeletedIsFalse(userId);
     }
 
     @GetMapping("/orderby/age")
@@ -67,7 +76,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") UUID userId) {
+    public String deleteUser(@PathVariable("userId") UUID userId) {
         return userService.deleteUser(userId);
     }
 
