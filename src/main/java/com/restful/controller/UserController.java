@@ -21,6 +21,7 @@ public class UserController {
 
     @PostMapping
     public UserDTO postUser(@RequestBody UserDTO user) {
+//        userService.logUserId("id1");
         return userService.postUser(user);
     }
 
@@ -39,7 +40,8 @@ public class UserController {
         Optional<User> existingUser = userService.getUserById(userId);
         if(existingUser.isPresent()) {
             UserDTO existingUserDto = new UserDTO();
-            BeanUtils.copyProperties(existingUser, existingUserDto);
+            BeanUtils.copyProperties(existingUser.get(), existingUserDto);
+            userService.logUserId(userId);
             return ResponseEntity.status(HttpStatus.OK).body(existingUserDto);
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

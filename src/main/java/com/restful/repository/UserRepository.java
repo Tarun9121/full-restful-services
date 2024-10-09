@@ -23,13 +23,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(nativeQuery = true, value = "select is_deleted from users where id = :userId")
     Optional<Integer> findByIdAndIsDeleted(String userId);
 
-//    public Optional<User> findByIdAndIsDeleted
-
     public Optional<User> findByIdAndIsDeleted(UUID userId, boolean isDeleted);
 
     public List<User> findByIsDeletedIsFalse();
 
-    public Optional<User> findByIdAndIsDeletedIsFalse(String userId);
+    public Optional<User> findByIdAndIsDeletedIsFalse(UUID userId);
 
     @Modifying
     @Transactional

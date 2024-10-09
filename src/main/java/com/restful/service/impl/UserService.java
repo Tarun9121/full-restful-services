@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,26 +31,53 @@ public class UserService implements UserInterface {
     public UserDTO postUser(UserDTO userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userDto.setId(savedUser.getId());
         return userDto;
     }
 
+    @Async
+    public void logUserId(UUID userId) {
+        for(int i = 0; i <= 10; i++) {
+            try {
+                Thread.sleep(1000);
+                System.out.println("loading...");
+            }
+            catch(InterruptedException exc) {
+                exc.printStackTrace();
+            }
+        }
+
+        System.out.println("please node down the user id: " + userId);
+    }
+
     public User findByIdAndIsDeletedIsFalse(UUID userId) {
-        return userRepository.findByIdAndIsDeletedIsFalse(userId.toString()).orElse(null);
+        return userRepository.findByIdAndIsDeletedIsFalse(userId).orElse(null);
     }
 
     public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
         List<User> usersList = new ArrayList<>();
-        BeanUtils.copyProperties(usersDtoList, usersList);
-        userRepository.saveAll(usersList);
+
+        usersDtoList.forEach(userDto -> {
+            User user = new User();
+            BeanUtils.copyProperties(userDto, user);
+            usersList.add(user);
+        });
+
+        List<User> savedUsersList = userRepository.saveAll(usersList);
+        usersDtoList.clear();
+        savedUsersList.forEach(user -> {
+            UserDTO userDto = new UserDTO();
+            BeanUtils.copyProperties(user, userDto);
+            usersDtoList.add(userDto);
+        });
         return usersDtoList;
     }
 
     public Optional<User> getUserById(UUID userId) {
-        return userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
+        return userRepository.findByIdAndIsDeletedIsFalse(userId);
     }
 
-    @Override
     public boolean isPresent(UUID userId) {
         List<User> usersList = userRepository.findAll();
         Optional<User> user = userRepository.findById(userId);
@@ -60,7 +88,6 @@ public class UserService implements UserInterface {
         return false;
     }
 
-    @Override
     public List<UserDTO> getAllUsersOrderByAge() {
         List<UserDTO> usersList = getAll();
         usersList.sort(Comparator.comparingInt(UserDTO::getAge));
@@ -81,7 +108,7 @@ public class UserService implements UserInterface {
     }
 
     public ResponseEntity<UserDTO> updateUser(UUID userId, UserDTO updatedUser) {
-        Optional<User> existingData = userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
+        Optional<User> existingData = userRepository.findByIdAndIsDeletedIsFalse(userId);
 
         if(existingData.isPresent()) {
             updatedUser.setId(userId);
@@ -96,7 +123,7 @@ public class UserService implements UserInterface {
     @Transactional
     @Modifying
     public String deleteUser(UUID userId) {
-        Optional<User> existingUser = userRepository.findByIdAndIsDeletedIsFalse(userId.toString());
+        Optional<User> existingUser = userRepository.findByIdAndIsDeletedIsFalse(userId);
 
         if(existingUser.isEmpty()) {
             return "user cannot found with the given id: " + userId;
@@ -107,15 +134,7 @@ public class UserService implements UserInterface {
         }
     }
 
-    /**
-     * WRITING NATIVE QUERIES WITH EntityManager:
-     * @Use - .creativeNativeQuery(nativeQuery)
-     * @Note - the above method will not map the result to the entity class, you will get Object[]. if you want to map the result to the entity then use .createNativeQuery(nativeQuery, Entity.class)
-     * @Params - if you have any params in the native query then use .setParamater("param1", param1)
-     * @Get_Result - if the query returns a list of rows use .getResultList(), if it returns one row then use .getSingleResult()
-     */
 
-    @Override
     public List<UserDTO> getUsersByAge(int age) {
         List<User> usersList = entityManager
                 .createQuery("select u from User u where u.age = :age", User.class)
