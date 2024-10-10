@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/user")
@@ -45,6 +47,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body(existingUserDto);
         }
         else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @GetMapping("/test")
+    public String test() throws ExecutionException, InterruptedException {
+        Future<String> status = userService.isMailsentSuccessfully();
+
+        while(true) {
+            if(status.isDone()) {
+                return status.get();
+            }
+        }
     }
 
     @GetMapping("/check/{userId}")

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 @Service
 public class UserService implements UserInterface {
@@ -28,6 +30,9 @@ public class UserService implements UserInterface {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private AsyncDemo demo;
+
     public UserDTO postUser(UserDTO userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
@@ -36,19 +41,52 @@ public class UserService implements UserInterface {
         return userDto;
     }
 
+    /**
+     * @Async - this annotation allows this method to run on the separate thread and do some asynchronous operations
+     * If this method calls any other method will be added to this thread.
+     * But if this Async method calls another Async method that is present in another class then it will create a new thread to run this method
+     *
+     * If the @Async methods are in separate Spring-managed beans (or if you explicitly go through the Spring proxy),
+     * a new thread will be created for each @Async method call.
+     * This is because Spring's AOP proxy will intercept the call and delegate it to a separate thread.
+     *
+     * @param userId - id of the user
+     */
     @Async
     public void logUserId(UUID userId) {
-        for(int i = 0; i <= 10; i++) {
+        System.out.println("@Async logUserId(UUID userId): " + Thread.currentThread().getName());
+        logUserId(userId.toString());
+    }
+
+    private void logUserId(String userId) {
+        System.out.println("logUserId(String userId): " + Thread.currentThread().getName());
+        System.out.print("loading");
+        for(int i = 0; i <= 6; i++) {
             try {
                 Thread.sleep(1000);
-                System.out.println("loading...");
+                System.out.print("#");
             }
-            catch(InterruptedException exc) {
-                exc.printStackTrace();
+            catch(InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
             }
         }
 
-        System.out.println("please node down the user id: " + userId);
+        demo.asyncMethod();
+        System.out.println("this is in task-1: please node down the user id: " + userId);
+    }
+
+    @Async
+    public Future<String> isMailsentSuccessfully() {
+        System.out.println("creating context");
+
+        try {
+            Thread.sleep(4000);
+        }
+        catch(InterruptedException interruptedException) {
+            return new AsyncResult<String>("mail not sent");
+        }
+
+        return new AsyncResult<String>("mail sent successfully");
     }
 
     public User findByIdAndIsDeletedIsFalse(UUID userId) {
@@ -149,5 +187,19 @@ public class UserService implements UserInterface {
         });
 
         return usersDtoList;
+    }
+}
+
+@Service
+class AsyncDemo {
+    @Async
+    public void asyncMethod() {
+        System.out.print("loading");
+        for(int i = 0; i <= 10; i++) {
+            try { Thread.sleep(1000); }
+            catch(InterruptedException interruptedException) { interruptedException.printStackTrace(); }
+            System.out.print(".");
+        }
+        System.out.println("asyncMethod(): " + Thread.currentThread().getName());
     }
 }
