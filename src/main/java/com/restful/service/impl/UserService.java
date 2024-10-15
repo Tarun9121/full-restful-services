@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -58,21 +59,20 @@ public class UserService implements UserInterface {
         logUserId(userId.toString());
     }
 
+    @Async
     private void logUserId(String userId) {
         System.out.println("logUserId(String userId): " + Thread.currentThread().getName());
         System.out.print("loading");
-        for(int i = 0; i <= 6; i++) {
+        for(int i = 0; i <= 10; i++) {
             try {
                 Thread.sleep(1000);
                 System.out.print("#");
             }
             catch(InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
+                System.err.print(interruptedException.getMessage());
             }
         }
 
-        demo.asyncMethod();
-        System.out.println("this is in task-1: please node down the user id: " + userId);
     }
 
     @Async
@@ -90,7 +90,7 @@ public class UserService implements UserInterface {
     }
 
     public User findByIdAndIsDeletedIsFalse(UUID userId) {
-        return userRepository.findByIdAndIsDeletedIsFalse(userId).orElse(null);
+        return userRepository.findByIdAndIsDeletedIsFalse(userId);
     }
 
     public List<UserDTO> saveAllUsers(List<UserDTO> usersDtoList) {
@@ -112,7 +112,7 @@ public class UserService implements UserInterface {
         return usersDtoList;
     }
 
-    public Optional<User> getUserById(UUID userId) {
+    public User getUserById(UUID userId) {
         return userRepository.findByIdAndIsDeletedIsFalse(userId);
     }
 
@@ -146,9 +146,9 @@ public class UserService implements UserInterface {
     }
 
     public ResponseEntity<UserDTO> updateUser(UUID userId, UserDTO updatedUser) {
-        Optional<User> existingData = userRepository.findByIdAndIsDeletedIsFalse(userId);
+        User existingData = userRepository.findByIdAndIsDeletedIsFalse(userId);
 
-        if(existingData.isPresent()) {
+        if(ObjectUtils.isEmpty(existingData)) {
             updatedUser.setId(userId);
             postUser(updatedUser);
             return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
@@ -161,9 +161,9 @@ public class UserService implements UserInterface {
     @Transactional
     @Modifying
     public String deleteUser(UUID userId) {
-        Optional<User> existingUser = userRepository.findByIdAndIsDeletedIsFalse(userId);
+        User existingUser = userRepository.findByIdAndIsDeletedIsFalse(userId);
 
-        if(existingUser.isEmpty()) {
+        if(ObjectUtils.isEmpty(existingUser)) {
             return "user cannot found with the given id: " + userId;
         }
         else {
@@ -197,7 +197,9 @@ class AsyncDemo {
         System.out.print("loading");
         for(int i = 0; i <= 10; i++) {
             try { Thread.sleep(1000); }
-            catch(InterruptedException interruptedException) { interruptedException.printStackTrace(); }
+            catch(InterruptedException interruptedException) {
+                System.err.println(interruptedException.getMessage());
+            }
             System.out.print(".");
         }
         System.out.println("asyncMethod(): " + Thread.currentThread().getName());

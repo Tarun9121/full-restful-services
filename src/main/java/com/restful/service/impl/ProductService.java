@@ -1,10 +1,11 @@
 package com.restful.service.impl;
 
 import com.restful.entity.Product;
-import com.restful.exception.ProductNotFoundException;
+import com.restful.exception.NotFoundException;
 import com.restful.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,9 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public Product postProduct(Product product) {
+        if(ObjectUtils.isEmpty(product.getProductName())) {
+            throw new NotFoundException("product name is imortant");
+        }
         return productRepository.save(product);
     }
 
@@ -23,10 +27,12 @@ public class ProductService {
     }
 
     public Product getProductById(UUID productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("product not found with id: " + productId));
+        return productRepository.findById(productId).orElseThrow(() -> new NotFoundException("product not found with id: " + productId));
     }
 
     public List<Product> getByProductAndOrderdBy(String product, String orderdBy) {
+//        ObjectUtils
+//        StringUtils
         return productRepository.findByProductNameAndOrderdBy(product, orderdBy);
     }
 

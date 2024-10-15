@@ -28,7 +28,7 @@ public interface UserInterface {
      * @param userId - id of the user
      * @return - if the data is present then it will send the user details, if not it will send 404-status with null body
      */
-    public Optional<User> getUserById(UUID userId);
+    public User getUserById(UUID userId);
 
     /**
      * tells if the user is present or not

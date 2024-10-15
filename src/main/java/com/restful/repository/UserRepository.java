@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     public List<User> findByIsDeletedIsFalse();
 
-    public Optional<User> findByIdAndIsDeletedIsFalse(UUID userId);
+    public User findByIdAndIsDeletedIsFalse(UUID userId);
 
     @Modifying
     @Transactional

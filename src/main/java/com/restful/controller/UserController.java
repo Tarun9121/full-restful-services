@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -39,14 +40,16 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID userId) {
-        Optional<User> existingUser = userService.getUserById(userId);
-        if(existingUser.isPresent()) {
+        User existingUser = userService.getUserById(userId);
+        if(!Objects.isNull(existingUser)) {
             UserDTO existingUserDto = new UserDTO();
-            BeanUtils.copyProperties(existingUser.get(), existingUserDto);
+            BeanUtils.copyProperties(existingUser, existingUserDto);
             userService.logUserId(userId);
-            return ResponseEntity.status(HttpStatus.OK).body(existingUserDto);
+            return new ResponseEntity<>(existingUserDto, HttpStatus.OK);
         }
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/test")
