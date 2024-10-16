@@ -32,6 +32,10 @@ public class Teacher {
     @Column(name = "subject")
     private String subject;
 
+    /**
+     * OneToMany: this annotation creates the relationship between the two entities,
+     * JoinColumn: creates the foreign key column in the entity based on the relationship, if we don't provide this joincolumn then it will create new table for onetomany annotation, becuase we are not giving the foreign key column by using JoinColumn
+     */
     @OneToMany(mappedBy="teacher",cascade = CascadeType.ALL)
     private List<Course> courseList;
 }
