@@ -30,9 +30,9 @@ public class Address {
     @Column(name = "city")
     private String city;
 
-//    @OneToOne(mappedBy = "address")
-//    @JsonIgnore
-//    private Student student;
+    @OneToOne(mappedBy = "address")
+    @JsonIgnore
+    private Student student;
 
     @Override
     public String toString() {
