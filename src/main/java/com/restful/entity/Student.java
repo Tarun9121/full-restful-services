@@ -31,6 +31,6 @@ public class Student {
     private String mobileNo;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
+
     private Address address;
 }
