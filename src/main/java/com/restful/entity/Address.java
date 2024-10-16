@@ -30,6 +30,6 @@ public class Address {
     @Column(name = "city")
     private String city;
 
-    @OneToOne
-    private Teacher teacher;
+    @OneToOne(mappedBy = "address")
+    private Student student;
 }
