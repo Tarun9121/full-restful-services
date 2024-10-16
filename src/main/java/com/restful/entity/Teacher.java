@@ -33,6 +33,5 @@ public class Teacher {
     private String subject;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "course_id_f")
     private List<Course> courseList;
 }
