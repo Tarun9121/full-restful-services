@@ -32,7 +32,6 @@ public class Teacher {
     @Column(name = "subject")
     private String subject;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "course_id_f")
+    @OneToMany(mappedBy="teacher",cascade = CascadeType.ALL)
     private List<Course> courseList;
 }
