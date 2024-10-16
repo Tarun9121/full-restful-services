@@ -1,7 +1,7 @@
 package com.restful.controller;
 
-import com.restful.entity.Teacher;
-import com.restful.service.impl.TeacherService;
+import com.restful.entity.Course;
+import com.restful.service.impl.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,23 +14,23 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/teacher")
-public class TeacherController {
+@RequestMapping("/course")
+public class CourseController {
     @Autowired
-    private TeacherService teacherService;
+    private CourseService courseService;
 
-    @PostMapping
-    public Teacher postTeacher(@RequestBody Teacher teacher) {
-        return teacherService.postTeacher(teacher);
+    @GetMapping("/{courseId}")
+    public Course getCourseById(@PathVariable("courseId")UUID courseId) {
+        return courseService.getCourseById(courseId);
     }
 
     @GetMapping
-    public List<Teacher> getAllTeachers() {
-        return teacherService.getAllTeachers();
+    public List<Course> getAllCourses() {
+        return courseService.getAllCourses();
     }
 
-    @GetMapping("/{teacherId}")
-    public Teacher getTeacherById(@PathVariable("teacherId") UUID teacherId) {
-        return teacherService.getTeacherById(teacherId);
+    @PostMapping
+    public Course postCourse(@RequestBody Course course) {
+        return courseService.postCourse(course);
     }
 }

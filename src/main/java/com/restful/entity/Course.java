@@ -31,7 +31,6 @@ public class Course {
     private Double price;
 
     @ManyToOne
-//    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
-
 }
