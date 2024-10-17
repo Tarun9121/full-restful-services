@@ -1,5 +1,6 @@
 package com.restful.service.impl;
 
+import com.restful.entity.Course;
 import com.restful.entity.Student;
 import com.restful.exception.NotFoundException;
 import com.restful.repository.StudentRepository;
@@ -14,6 +15,9 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private CourseService courseService;
+
     public Student postStudent(Student student) {
         return studentRepository.save(student);
     }
@@ -24,5 +28,13 @@ public class StudentService {
 
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
+    }
+
+    public Student addCourseToMyLearnings(UUID studentId, UUID courseId) {
+        Student student = getStudentById(studentId);
+        Course course = courseService.getCourseById(courseId);
+
+        student.getMyLearnings().add(course);
+        return studentRepository.save(student);
     }
 }
