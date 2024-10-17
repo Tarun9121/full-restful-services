@@ -12,8 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.List;
 import java.util.UUID;
 
 @Entity @Table(name="student")
@@ -29,7 +33,18 @@ public class Student {
     @Column(name = "mobile_no")
     private String mobileNo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "address_id")
+    /**
+     * In one-to-one (bidirectional) we don't need to use the JoinColumn because we already giving information about how the tables
+     */
+    @OneToOne
+    @JoinColumn(name = "address_id")
     private Address address;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "student_courses",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> enrolledCourses;
 }

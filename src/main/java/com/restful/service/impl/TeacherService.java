@@ -16,20 +16,19 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
 
     public Teacher postTeacher(Teacher teacher) {
-        teacher.getCourseList()
-                .forEach((course -> course.setTeacher(teacher)));
+//        teacher.getCourseList()
+//                .forEach((course -> course.setTeacher(teacher)));
 
-        return teacherRepository.save(teacher);
+        Teacher savedTeacher = teacherRepository.save(teacher);
+//        removeTeachersFromCourses(savedTeacher);
+
+        return savedTeacher;
     }
 
     public List<Teacher> getAllTeachers() {
         List<Teacher> allTeachers = teacherRepository.findAll();
 
-        allTeachers.forEach(teacher -> {
-                    if (!CollectionUtils.isEmpty(teacher.getCourseList())) {
-                        teacher.getCourseList().forEach(course -> course.setTeacher(null));
-                    }
-                });
+        removeTeachersFromCoursesList(allTeachers);
 
         return allTeachers;
     }
@@ -37,10 +36,18 @@ public class TeacherService {
     public Teacher getTeacherById(UUID teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new NotFoundException("teacher not found"));
 
+        removeTeachersFromCourses(teacher);
+
+        return teacher;
+    }
+
+    private void removeTeachersFromCourses(Teacher teacher) {
         if(!CollectionUtils.isEmpty(teacher.getCourseList())) {
             teacher.getCourseList().forEach(course -> course.setTeacher(null));
         }
+    }
 
-        return teacher;
+    private void removeTeachersFromCoursesList(List<Teacher> teachersList) {
+        teachersList.forEach(this::removeTeachersFromCourses);
     }
 }
