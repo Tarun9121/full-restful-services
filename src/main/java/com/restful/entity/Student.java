@@ -17,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,15 +37,15 @@ public class Student {
     /**
      * In one-to-one (bidirectional) we don't need to use the JoinColumn because we already giving information about how the tables
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "student_courses",
+            name = "my_learnings",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> enrolledCourses;
+    private List<Course> enrolledCourses = new ArrayList<>();
 }

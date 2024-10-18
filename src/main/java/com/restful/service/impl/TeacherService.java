@@ -16,11 +16,10 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
 
     public Teacher postTeacher(Teacher teacher) {
-//        teacher.getCourseList()
-//                .forEach((course -> course.setTeacher(teacher)));
+        teacher.getCourseList().forEach((course -> course.setTeacher(teacher)));
 
         Teacher savedTeacher = teacherRepository.save(teacher);
-//        removeTeachersFromCourses(savedTeacher);
+        removeTeachersFromCourses(savedTeacher);
 
         return savedTeacher;
     }
