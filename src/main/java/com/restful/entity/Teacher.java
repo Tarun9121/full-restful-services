@@ -36,6 +36,6 @@ public class Teacher {
      * @JoinColumn: creates the foreign key column in the entity based on the relationship, if we don't provide this joincolumn then it will create new table for onetomany annotation, becuase we are not giving the foreign key column by using JoinColumn
      * @Note: in one-to-many bi-direction the hibernate only creates two tables (it will not generate new entity)
      */
-    @OneToMany(mappedBy="teacher", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="teacher",cascade = CascadeType.PERSIST)
     private List<Course> courseList;
 }
