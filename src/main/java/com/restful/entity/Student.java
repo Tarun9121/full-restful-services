@@ -41,6 +41,9 @@ public class Student {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @Column(name="is_deleted")
+    private boolean isDeleted;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "my_learnings",

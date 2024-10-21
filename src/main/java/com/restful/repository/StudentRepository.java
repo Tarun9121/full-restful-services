@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, UUID> {
+    boolean isMobileNoExists(String mobileNo);
+//    Student findByIdIsDeletedIsFalse(UUID studentId);
 }

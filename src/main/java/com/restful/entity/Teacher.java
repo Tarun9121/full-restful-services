@@ -38,4 +38,7 @@ public class Teacher {
      */
     @OneToMany(mappedBy="teacher", cascade = CascadeType.PERSIST)
     private List<Course> courseList;
+
+    @Column(name="is_deleted")
+    private boolean isDeleted;
 }

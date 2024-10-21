@@ -31,15 +31,5 @@ public class Address {
     private String city;
 
     @OneToOne(mappedBy = "address")
-    @JsonIgnore
     private Student student;
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "addressId=" + addressId +
-                ", pincode='" + pincode + '\'' +
-                ", city='" + city + '\'' +
-                '}';
-    }
 }
