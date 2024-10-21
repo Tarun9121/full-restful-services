@@ -2,8 +2,10 @@ package com.restful.repository;
 
 import com.restful.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -18,5 +20,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
       Hibernate: select course_id, course_name, price, teacher_id from course where course_id = ?
       Hibernate: select teacher_id, teacher_name, subject from teacher where teacher_id = ?
      */
+
+    Teacher findByMobileNo(String mobileNo);
+
+    @Query(nativeQuery = true, value="select * from teacher where is_deleted = false")
+    List<Teacher> findAllIsDeletedIsFalse();
 }
 

@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,9 @@ public class Teacher {
     @Column(name = "teacher_name")
     private String teacherName;
 
+    @Column(name="mobile_no")
+    private String mobileNo;
+
     @Column(name = "subject")
     private String subject;
 
@@ -37,7 +41,7 @@ public class Teacher {
      * @Note: in one-to-many bi-direction the hibernate only creates two tables (it will not generate new entity)
      */
     @OneToMany(mappedBy="teacher", cascade = CascadeType.PERSIST)
-    private List<Course> courseList;
+    private List<Course> courseList = new ArrayList<>();
 
     @Column(name="is_deleted")
     private boolean isDeleted;

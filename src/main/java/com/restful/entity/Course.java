@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity @Table(name="course")
@@ -39,4 +40,17 @@ public class Course {
 
     @ManyToMany(mappedBy = "enrolledCourses", cascade = CascadeType.ALL)
     private List<Student> students;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(courseId, course.courseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(courseId);
+    }
 }
