@@ -16,8 +16,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     @Id
-    @GeneratedValue(generator = "haha")
-    @GenericGenerator(name="haha", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name="uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(columnDefinition = "VARCHAR(36)")
     @Type(type="uuid-char")
     private UUID id;
@@ -28,8 +28,14 @@ public class User {
     @Column(name="email")
     private String email;
 
+    @Column(name="mobile_no")
+    private String mobileNo;
+
     @Column(name="age")
     private Integer age;
+
+    @Column(name="role")
+    private String role;
 
     @Column(name="password")
     private String password;
